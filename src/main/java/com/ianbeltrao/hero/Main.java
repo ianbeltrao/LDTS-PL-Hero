@@ -34,5 +34,6 @@ public class Main {
         screen.setCharacter(10, 10, TextCharacter.fromCharacter('X')
                 [0]);
         screen.refresh();
+
     }
 }
