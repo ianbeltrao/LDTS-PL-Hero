@@ -33,6 +33,7 @@ public class Arena {
 
     private List<Coin> coins;
 
+
     private List<Coin> createCoins() {
         Random random = new Random();
         ArrayList<Coin> coins = new ArrayList<>();
@@ -42,12 +43,23 @@ public class Arena {
         return coins;
     }
 
+    private List<Monster> monsters;
+
+    private List<Monster> createMonster() {
+        Random random = new Random();
+        ArrayList<Monster> monsters = new ArrayList<>();
+        for (int i = 0; i < 15; i++)
+            monsters.add(new Monster(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
+        return monsters;
+    }
+
     public Arena(int x, int y) {
         width = x;
         height = y;
         hero = new Hero(x/2, y/2);
         this.walls = createWalls();
         this.coins = createCoins();
+        this.monsters = createMonster();
     }
 
     private boolean canHeroMove(Position position) {
@@ -70,10 +82,40 @@ public class Arena {
         }
     }
 
+    public void verifyMonsterCollisions(Position position){
+        for(int i = 0; i < monsters.size() ; i++){
+            if(monsters.get(i).position.equals(position)){
+                System.out.println("You died");
+                System.exit(0);
+            }
+        }
+    }
+
+    public boolean canMonsterMove(Position position){
+        if(position.getX() < 0 || position.getY() < 0 || position.getX() > width - 1 || position.getY() > height - 1) return false;
+        for(Wall wall: walls) if(wall.getPosition().equals(position)) return false;
+        return true;
+    }
+
+    public void moveMonster(){
+        Random random = new Random();
+        for(Monster monster : monsters){
+            int x = random.nextInt(3) - 1;
+            int y = random.nextInt(3) - 1;
+            Position position = new Position(monster.position.getX() + x,monster.position.getY()+y);
+            if(canMonsterMove(position)){
+                monster.position.setX(position.getX());
+                monster.position.setY(position.getY());
+            }
+        }
+    }
+
     public void moveHero(Position position) {
         if (canHeroMove(position)) {
             retrieveCoins(position);
+            verifyMonsterCollisions(position);
             hero.setPosition(position);
+            moveMonster();
         }
     }
 
@@ -92,6 +134,8 @@ public class Arena {
             wall.draw(graphics);
         for (Coin coin : coins)
             coin.draw(graphics);
+        for (Monster monster : monsters)
+            monster.draw(graphics);
     }
 
     public int getHeight() {
