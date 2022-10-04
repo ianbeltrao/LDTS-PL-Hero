@@ -7,12 +7,11 @@ import com.googlecode.lanterna.screen.Screen;
 
 
 
-public class Hero {
-    private Position position = new Position();
+public class Hero extends Element {
+
 
     public Hero(int x, int y) {
-        this.position.setX(x);
-        this.position.setY(y);
+        super(x,y);
     }
 
     public Hero() {
