@@ -11,6 +11,10 @@ public class Hero {
         this.position.setY(y);
     }
 
+    public Hero() {
+        this(10, 10);
+    }
+
     public int getX() {
         return position.getX();
     }
